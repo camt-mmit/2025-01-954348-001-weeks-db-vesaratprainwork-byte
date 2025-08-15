@@ -206,3 +206,6 @@ dl.app-cmp-data-detail > dt:not(:empty)::after {
 .app-cl-multiline {
     white-space: pre-line;
 }
+
+/* ใช้กับตัวเลขที่ไม่อยากให้ชิดขวา */
+.app-cl-number.-left { text-align: left; }

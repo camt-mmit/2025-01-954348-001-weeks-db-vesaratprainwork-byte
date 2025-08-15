@@ -9,16 +9,14 @@
             <col style="width:6ch;" />
             <col />
             <col />
-            <col style="width:14ch;" />
-            <col style="width:14ch;" />
+           
         </colgroup>
         <thead>
             <tr>
                 <th>Code</th>
                 <th>Name</th>
                 <th>Owner</th>
-                <th>Latitude</th>
-                <th>Longitude</th>
+                
             </tr>
         </thead>
         <tbody>
@@ -30,8 +28,7 @@
                     </td>
                     <td>{{ $shop->name }}</td>
                     <td>{{ $shop->owner }}</td>
-                    <td class="app-cl-number">{{ $shop->latitude }}</td>
-                    <td class="app-cl-number">{{ $shop->longitude }}</td>
+                    
                 </tr>
             @endforeach
         </tbody>
