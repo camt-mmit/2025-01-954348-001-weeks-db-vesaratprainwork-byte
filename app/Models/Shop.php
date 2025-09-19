@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Shop extends Model
 {
     protected $fillable = ['code', 'name', 'owner', 'latitude', 'longitude', 'address'];
 
-    protected $casts = [
-        'latitude'  => 'float',
-        'longitude' => 'float',
-    ];
+     function products(): BelongsToMany {
+ return $this->belongsToMany(Product::class)->withTimestamps();
+ }
+
 }

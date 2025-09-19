@@ -1,0 +1,33 @@
+@extends('shops.main', [
+    'title' => 'Create',
+])
+
+@section('content')
+    <form action="{{ route('shops.create') }}" method="post">
+        @csrf
+
+        <div class="app-cmp-form-detail">
+            <label for="app-inp-code">Code</label>
+            <input type="text" id="app-inp-code" name="code" required />
+
+            <label for="app-inp-name">Name</label>
+            <input type="text" id="app-inp-name" name="name" required />
+
+            <label for="app-inp-owner">Owner</label>
+            <input type="text" id="app-inp-owner" name="owner" required />
+
+            <label for="app-inp-lat">Latitude</label>
+            <input type="number" id="app-inp-lat" name="latitude" step="any" required />
+
+            <label for="app-inp-lng">Longitude</label>
+            <input type="number" id="app-inp-lng" name="longitude" step="any" required />
+
+            <label for="app-inp-address">Address</label>
+            <textarea id="app-inp-address" name="address" cols="80" rows="8" required></textarea>
+        </div>
+
+        <div class="app-cmp-form-actions">
+            <button type="submit">Create</button>
+        </div>
+    </form>
+@endsection

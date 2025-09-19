@@ -16,15 +16,18 @@
             <ul class="app-cmp-links">
                 <li>
                     <a href="{{ route('products.list') }}">Products</a>
+                </li>
+                <li>
                     <a href="{{ route('shops.list') }}">Shops</a>
                 </li>
+                 <li><a href="{{ route('categories.list') }}">Categories</a></li>
             </ul>
         </nav>
     </header>
 
-    <main id="app-cmp-main-content">
+    <main id="app-cmp-main-content" @class($mainClasses ?? [])>
         <header>
-            <h1>>{{ $title }}</h1>
+            <h1><span @class($titleClesses ?? [])>{{ $title }}</span></h1>
             @yield('header')
         </header>
 
