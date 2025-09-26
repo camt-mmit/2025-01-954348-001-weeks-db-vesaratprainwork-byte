@@ -196,10 +196,12 @@ function removeShop(string $productCode, string $shopCode): RedirectResponse
     return redirect()->route('products.view-shops', ['product' => $product->code]);
 }
 
-function showCreateForm(): View
+function showCreateForm(): \Illuminate\View\View
 {
-    $categories = Category::orderBy('code')->get();
-    return view('products.create-form', ['categories' => $categories]);
+    return view('products.create-form', [
+        'title' => 'Create',
+        'categories' => Category::query()->orderBy('code')->get(), 
+    ]);
 }
 
 

@@ -41,14 +41,22 @@
 @section('content')
     <table class="app-cmp-data-list">
         <colgroup>
+
             <col style="width: 5ch;" />
+
+            <col style="width:6ch;" />
+            <col />
+            <col />
+           
+
         </colgroup>
 
         <thead>
             <tr>
                 <th>Code</th>
                 <th>Name</th>
-                <th>Owner</th>
+                <th>Owner</th>       
+
             </tr>
         </thead>
 

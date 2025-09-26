@@ -267,3 +267,6 @@ dl.app-cmp-data-detail > dt:not(:empty)::after {
         }
     }
 }
+
+/* ใช้กับตัวเลขที่ไม่อยากให้ชิดขวา */
+.app-cl-number.-left { text-align: left; }

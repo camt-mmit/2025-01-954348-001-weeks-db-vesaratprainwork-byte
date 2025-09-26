@@ -26,7 +26,11 @@
 @section('content')
     <dl class="app-cmp-data-detail">
         <dt>Code</dt>
-        <dd><span class="app-cl-code">{{ $shop->code }}</span></dd>
+        <dd>
+            <a class="app-cl-code" href="{{ route('shops.view', ['shop' => $shop->code]) }}">
+                {{ $shop->code }}
+            </a>
+        </dd>
 
         <dt>Name</dt>
         <dd>{{ $shop->name }}</dd>
@@ -35,10 +39,20 @@
         <dd>{{ $shop->owner }}</dd>
 
         <dt>Location</dt>
+
         <dd><span class="app-cl-number">{{ $shop->latitude }}, {{ $shop->longitude }}</span></dd>
 
         <dt>Address</dt>
         <dd><pre style="margin: 0px;">{{ $shop->address }}</pre></dd>
+
+<dd class="app-cl-number -left">
+    {{ $shop->latitude }}, {{ $shop->longitude }}
+</dd>
+        <dt>Address</dt>
+        <dd>
+            <div class="app-cl-multiline">{{ $shop->address }}</div>
+        </dd>
+
     </dl>
 @endsection
 

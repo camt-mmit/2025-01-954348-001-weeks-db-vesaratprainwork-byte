@@ -16,8 +16,15 @@
             <ul class="app-cmp-links">
                 <li>
                     <a href="{{ route('products.list') }}">Products</a>
+
                 </li>
                 <li>
+                 
+                </li>
+
+                <li>
+                    
+
                     <a href="{{ route('shops.list') }}">Shops</a>
                 </li>
                  <li><a href="{{ route('categories.list') }}">Categories</a></li>
