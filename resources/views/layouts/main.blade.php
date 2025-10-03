@@ -24,6 +24,40 @@
                 <li>
                     <a href="{{ route('shops.list') }}">Shops</a>
                 </li>
+                <li>
+                    <a href="{{ route('categories.list') }}">Categories</a>
+                </li>
+
+
+                @can('create', \App\Models\User::class)
+                <li><a href="{{ route('users.list') }}">Users</a></li>
+                @endcan
+
+                @auth
+                @php
+                if (!Route::is('users.selves.*')) {
+                session()->put('bookmarks.users.selves.view', url()->full());
+                }
+                @endphp
+                <li>
+                    @if (Route::has('users.selves.view'))
+                    <a href="{{ route('users.selves.view') }}">{{ \Auth::user()->name }}</a>
+                    @else
+                    <span>{{ \Auth::user()->name }}</span>
+                    @endif
+                </li>
+                <li>
+                    <form action="{{ route('logout') }}" method="post" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="app-cl-link">Logout</button>
+                    </form>
+                </li>
+                @endauth
+                {{-- DEBUG (ชั่วคราว): ดู role และผล can --}}
+{{-- Role: {{ \Auth::user()->role ?? 'guest' }} --}}
+{{-- @can('create', \App\Models\User::class) CAN(create User) = YES @else NO @endcan --}}
+
+
             </ul>
 
             @auth
@@ -49,6 +83,14 @@
                     <div role="status">
                         {{ $value }}
                     </div>
+            <h1><span @class($titleClesses ?? [])>{{ $title }}</span></h1>
+
+            
+            <div class="app-cmp-notifications">
+                @session('status')
+                <div role="status">
+                    {{ $value }}
+                </div>
                 @endsession
             </div>
 
@@ -59,7 +101,7 @@
     </main>
 
     <footer id="app-cmp-main-footer">
-        &#xA9; Copyright Pachara's Database.
+        &#xA9; Copyright Vesarat's Database.
     </footer>
 </body>
 

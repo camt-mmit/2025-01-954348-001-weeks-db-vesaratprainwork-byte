@@ -268,6 +268,42 @@ dl.app-cmp-data-detail > dt:not(:empty)::after {
     }
 }
 
+.pagination {
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    column-gap: 8px;
+
+    font-weight: bold;
+
+    & > * {
+        margin: 0px;
+        padding: 0px;
+        box-sizing: border-box;
+
+        & > * {
+            display: block;
+            box-sizing: border-box;
+
+            padding: 0.5em 1ch 0.5em 1ch;
+            text-decoration: none;
+
+            &:is(a) {
+                color: var(--app-primary-color);
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+}
+
 .app-cmp-user-panel {
     display: flex;
     flex-direction: row;
