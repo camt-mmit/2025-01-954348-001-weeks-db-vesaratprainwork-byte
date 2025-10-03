@@ -9,4 +9,3 @@
         <span @class($subTitleClasses ?? [])>{{ $subTitle }}</span>
     @endisset
 @endsection
-
