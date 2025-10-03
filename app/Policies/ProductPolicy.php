@@ -3,39 +3,41 @@
 namespace App\Policies;
 
 use App\Models\User;
+use App\Models\Product;
 
 class ProductPolicy
 {
-    /**
-     * Create a new policy instance.
-     */
-    public function __construct()
-    {
-        //
-    }
 
-    function list(): bool
+    function list(User $user): bool
+    {
+        return true;
+    }
+    function view(User $user, Product $product): bool
     {
         return true;
     }
 
-    function view(): bool
-    {
-        return $this->list();
-    }
 
     function create(User $user): bool
     {
         return $user->isAdministrator();
     }
-
-    function update(User $user): bool
+    function update(User $user, Product $product): bool
     {
-        return $this->create($user);
+        return $user->isAdministrator();
+    }
+    function delete(User $user, Product $product): bool
+    {
+        return $user->isAdministrator();
     }
 
-    function delete(User $user): bool
+
+    function addShop(User $user, Product $product): bool
     {
-        return $this->update($user);
+        return $user->isAdministrator();
+    }
+    function removeShop(User $user, Product $product): bool
+    {
+        return $user->isAdministrator();
     }
 }

@@ -60,6 +60,7 @@
                         ) }}">&lt;
                         Back</a>
                 </li>
+                @can('addProduct', $shop)
                 <li>
                     <a
                         href="{{ route('shops.add-products-form', [
@@ -67,6 +68,7 @@
                         ]) }}">Add
                         Products</a>
                 </li>
+                @endcan
             </ul>
         </nav>
 
@@ -92,7 +94,7 @@
                 <th>Category</th>
                 <th>Price</th>
                 <th>No. of Shops</th>
-                <th></th>
+               
             </tr>
         </thead>
 
@@ -121,11 +123,13 @@
                     </td>
                     <td class="app-cl-number">{{ number_format($product->price, 2) }}</td>
                     <td class="app-cl-number">{{ number_format($product->shops_count, 0) }}</td>
+                    @can('removeProduct', $shop)
                     <td>
                         <button type="submit" form="app-form-remove-product" name="product" value="{{ $product->code }}">
                             Remove
                         </button>
                     </td>
+                    @endcan
                 </tr>
             @endforeach
         </tbody>

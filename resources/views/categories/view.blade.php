@@ -27,12 +27,14 @@
                     ]) }}">View
                     Products</a>
             </li>
+            @can('update', $category)
             <li>
                 <a
                     href="{{ route('categories.update-form', [
                         'category' => $category->code,
                     ]) }}">Update</a>
             </li>
+            @endcan
             @can('delete', $category)
                 <li class="app-cl-warn">
                     <button type="submit" form="app-form-delete" class="app-cl-link">Delete</button>

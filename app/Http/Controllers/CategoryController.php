@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
@@ -40,12 +41,14 @@ class CategoryController extends SearchableController
     }
 
     function showCreateForm(): View
+    
     {
         return view('categories.create-form');
     }
 
     function create(ServerRequestInterface $request): RedirectResponse
     {
+        Gate::authorize('create', Category::class);
         $category = Category::create($request->getParsedBody());
 
         return redirect(
@@ -57,6 +60,7 @@ class CategoryController extends SearchableController
     function showUpdateForm(string $categoryCode): View
     {
         $category = $this->find($categoryCode);
+         Gate::authorize('update', $category);
 
         return view('categories.update-form', [
             'category' => $category,
@@ -68,6 +72,7 @@ class CategoryController extends SearchableController
         string $categoryCode,
     ): RedirectResponse {
         $category = $this->find($categoryCode);
+        Gate::authorize('update', $category);
         $category->fill($request->getParsedBody());
         $category->save();
 
@@ -117,6 +122,7 @@ class CategoryController extends SearchableController
         string $categoryCode,
     ): View {
         $category = $this->find($categoryCode);
+        Gate::authorize('addProduct', $category);
         $query = $productController
             ->getQuery()
             ->whereDoesntHave(
@@ -145,6 +151,7 @@ class CategoryController extends SearchableController
         string $categoryCode,
     ): RedirectResponse {
         $category = $this->find($categoryCode);
+        Gate::authorize('addProduct', $category);
         $data = $request->getParsedBody();
 
         $product = $productController

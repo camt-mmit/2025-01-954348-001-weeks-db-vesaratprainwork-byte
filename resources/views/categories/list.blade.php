@@ -27,9 +27,9 @@
             @endphp
 
             <ul class="app-cmp-links">
-                <li>
-                    <a href="{{ route('categories.create-form') }}">New Category</a>
-                </li>
+                @can('create', \App\Models\Category::class)
+                    <li><a href="{{ route('categories.create-form') }}">New Category</a></li>
+                @endcan
             </ul>
         </nav>
 

@@ -24,6 +24,9 @@
                 <li>
                     <a href="{{ route('shops.list') }}">Shops</a>
                 </li>
+                @canany(['list','viewAny'], \App\Models\User::class)
+        <li><a href="{{ route('users.list') }}">Users</a></li>
+      @endcanany
             </ul>
 
             @auth
@@ -39,9 +42,10 @@
     <main id="app-cmp-main-content" @class($mainClasses ?? [])>
         <header>
             <h1>
-                @section('title')
-                    <span @class($titleClasses ?? [])>{{ $title }}</span>
-                @show
+                 {{ $title ?? '' }}
+        @isset($subTitle)
+            : <span class="app-cl-code">{{ $subTitle }}</span>
+        @endisset
             </h1>
 
             <div class="app-cmp-notifications">
@@ -50,6 +54,10 @@
                         {{ $value }}
                     </div>
                 @endsession
+
+                @error('credentials')
+                    <div role="alert">{{ $message }}</div>
+                @enderror
             </div>
 
             @yield('header')

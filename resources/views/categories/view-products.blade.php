@@ -53,6 +53,7 @@
                         ) }}">&lt;
                         Back</a>
                 </li>
+                 @can('addProduct', $category)
                 <li>
                     <a
                         href="{{ route('categories.add-products-form', [
@@ -60,6 +61,7 @@
                         ]) }}">Add
                         Products</a>
                 </li>
+                @endcan
             </ul>
         </nav>
 

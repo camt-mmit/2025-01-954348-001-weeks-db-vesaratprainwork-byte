@@ -5,38 +5,38 @@
 
 @section('header')
     <nav>
-        <form action="{{ route('shops.delete', [
-            'shop' => $shop->code,
-        ]) }}" method="post"
-            id="app-form-delete">
+        <form action="{{ route('shops.delete', ['shop' => $shop->code]) }}"
+              method="post"
+              id="app-form-delete">
             @csrf
         </form>
 
         <ul class="app-cmp-links">
-            @php
-                session()->put('bookmarks.shops.view-products', url()->full());
-            @endphp
+            <li>
+                <a href="{{ session()->get('bookmarks.shops.view', route('shops.list')) }}">&lt; Back</a>
+            </li>
 
             <li>
-                <a href="{{ session()->get('bookmarks.shops.view', route('shops.list')) }}">&lt;
-                    Back</a>
+                <a href="{{ route('shops.view-products', ['shop' => $shop->code]) }}">View Products</a>
             </li>
-            <li>
-                <a
-                    href="{{ route('shops.view-products', [
-                        'shop' => $shop->code,
-                    ]) }}">View
-                    Products</a>
-            </li>
-            <li>
-                <a
-                    href="{{ route('shops.update-form', [
-                        'shop' => $shop->code,
-                    ]) }}">Update</a>
-            </li>
-            <li class="app-cl-warn">
-                <button type="submit" form="app-form-delete" class="app-cl-link">Delete</button>
-            </li>
+
+            @can('addProduct', $shop)
+                <li>
+                    <a href="{{ route('shops.add-products-form', ['shop' => $shop->code]) }}">Add Products</a>
+                </li>
+            @endcan
+
+            @can('update', $shop)
+                <li>
+                    <a href="{{ route('shops.update-form', ['shop' => $shop->code]) }}">Update</a>
+                </li>
+            @endcan
+
+            @can('delete', $shop)
+                <li class="app-cl-warn">
+                    <button type="submit" form="app-form-delete" class="app-cl-link">Delete</button>
+                </li>
+            @endcan
         </ul>
     </nav>
 @endsection
@@ -44,19 +44,13 @@
 @section('content')
     <dl class="app-cmp-data-detail">
         <dt>Code</dt>
-        <dd>
-            <span class="app-cl-code">{{ $shop->code }}</span>
-        </dd>
+        <dd class="app-cl-code">{{ $shop->code }}</dd>
 
         <dt>Name</dt>
-        <dd>
-            {{ $shop->name }}
-        </dd>
+        <dd class="app-cl-name">{{ $shop->name }}</dd>
 
         <dt>Owner</dt>
-        <dd>
-            {{ $shop->owner }}
-        </dd>
+        <dd>{{ $shop->owner }}</dd>
 
         <dt>Location</dt>
         <dd>

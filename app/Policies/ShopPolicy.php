@@ -2,35 +2,39 @@
 
 namespace App\Policies;
 
-use App\Models\Shop;
 use App\Models\User;
+use App\Models\Shop;
 
 class ShopPolicy
 {
-
-    public function list(User $user): bool
+    function list(User $user): bool
     {
         return true;
     }
-    public function view(User $user, Shop $shop): bool
+    function view(User $user, Shop $shop): bool
     {
         return true;
     }
 
-
-    public function create(User $user): bool
+    function create(User $user): bool
+    {
+        return $user->isAdministrator();
+    }
+    function update(User $user, Shop $shop): bool
+    {
+        return $user->isAdministrator();
+    }
+    function delete(User $user, Shop $shop): bool
     {
         return $user->isAdministrator();
     }
 
 
-    public function update(User $user, Shop $shop): bool
+    function addProduct(User $user, Shop $shop): bool
     {
         return $user->isAdministrator();
     }
-
-
-    public function delete(User $user, Shop $shop): bool
+    function removeProduct(User $user, Shop $shop): bool
     {
         return $user->isAdministrator();
     }

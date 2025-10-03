@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\Shop;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -48,11 +50,13 @@ class ShopController extends SearchableController
 
     function showCreateForm(): View
     {
+        Gate::authorize('create', Shop::class);
         return view('shops.create-form');
     }
 
     function create(ServerRequestInterface $request): RedirectResponse
     {
+         Gate::authorize('create', Shop::class);
         $shop = Shop::create($request->getParsedBody());
 
         return redirect(
@@ -64,17 +68,18 @@ class ShopController extends SearchableController
     function showUpdateForm(string $shopCode): View
     {
         $shop = $this->find($shopCode);
+         Gate::authorize('update', $shop);
 
         return view('shops.update-form', [
             'shop' => $shop,
         ]);
     }
 
-    function update(
-        ServerRequestInterface $request,
+    function update(ServerRequestInterface $request,
         string $shopCode,
     ): RedirectResponse {
         $shop = $this->find($shopCode);
+        Gate::authorize('update', $shop);
         $shop->fill($request->getParsedBody());
         $shop->save();
 
@@ -88,6 +93,7 @@ class ShopController extends SearchableController
     function delete(string $shopCode): RedirectResponse
     {
         $shop = $this->find($shopCode);
+         Gate::authorize('delete', $shop);
         $shop->delete();
 
         return redirect(
@@ -121,6 +127,7 @@ class ShopController extends SearchableController
         string $shopCode,
     ): View {
         $shop = $this->find($shopCode);
+        Gate::authorize('addProduct', $shop);
         $query = $productController
             ->getQuery()
             ->whereDoesntHave(
@@ -149,6 +156,7 @@ class ShopController extends SearchableController
         string $shopCode,
     ): RedirectResponse {
         $shop = $this->find($shopCode);
+        Gate::authorize('addProduct', $shop);
         $data = $request->getParsedBody();
 
         $product = $productController
@@ -174,6 +182,7 @@ class ShopController extends SearchableController
         string $shopCode,
     ): RedirectResponse {
         $shop = $this->find($shopCode);
+        Gate::authorize('removeProduct', $shop);
         $data = $request->getParsedBody();
 
         $product = $shop->products()

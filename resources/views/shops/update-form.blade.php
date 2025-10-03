@@ -1,7 +1,8 @@
-@extends('shops.main', [
-    'title' => $shop->code,
-    'titleClasses' => ['app-cl-code'],
+@extends('layouts.main', [
+    'title' => 'Users',
+    'subTitle' => $user->email,
 ])
+
 
 @section('content')
     <form action="{{ route('shops.update', [

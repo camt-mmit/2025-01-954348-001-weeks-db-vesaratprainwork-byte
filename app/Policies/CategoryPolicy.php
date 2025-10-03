@@ -2,32 +2,36 @@
 
 namespace App\Policies;
 
-use App\Models\Category;
 use App\Models\User;
+use App\Models\Category;
 
 class CategoryPolicy
 {
-    /**
-     * Create a new policy instance.
-     */
-    public function __construct()
+    function list(User $user): bool
     {
-        //
+        return true;
+    }
+    function view(User $user, Category $category): bool
+    {
+        return true;
     }
 
     function create(User $user): bool
     {
         return $user->isAdministrator();
     }
-
-    function update(User $user): bool
+    function update(User $user, Category $category): bool
     {
-        return $this->create($user);
+        return $user->isAdministrator();
     }
-
     function delete(User $user, Category $category): bool
     {
-        $category->loadCount('products');
-        return $this->update($user) && ($category->products_count === 0);
+        return $user->isAdministrator();
+    }
+
+
+    function addProduct(User $user, Category $category): bool
+    {
+        return $user->isAdministrator();
     }
 }

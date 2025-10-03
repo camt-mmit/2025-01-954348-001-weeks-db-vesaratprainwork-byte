@@ -5,23 +5,26 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Psr\Http\Message\ServerRequestInterface;
 
 class UserController extends SearchableController
 {
     public const MAX_ITEMS = 10;
 
+    
     #[\Override]
     public function getQuery(): Builder
     {
-        return User::query()->orderBy('email');
+        return User::query()->orderBy('id');
     }
 
-    
-    protected function find(string $email): User
+
+    public function find(string $email): User
     {
         return User::where('email', $email)->firstOrFail();
     }
@@ -31,7 +34,6 @@ class UserController extends SearchableController
         return \Auth::user();
     }
 
-   
     public function prepareCriteria(array $src): array
     {
         return [
@@ -39,28 +41,31 @@ class UserController extends SearchableController
         ];
     }
 
-    public function filter($query, array $criteria)
+    /** ลายเซ็นต้องตรงกับ SearchableController */
+    public function filter(Builder|Relation $query, array $criteria): Builder|Relation
     {
         $term = trim((string)($criteria['term'] ?? ''));
+
         if ($term !== '') {
             $query->where(static function ($q) use ($term) {
                 $q->where('email', 'like', "%{$term}%")
-                  ->orWhere('name', 'like', "%{$term}%")
-                  ->orWhere('role', 'like', "%{$term}%");
+                    ->orWhere('name',  'like', "%{$term}%")
+                    ->orWhere('role',  'like', "%{$term}%");
             });
         }
+
         return $query;
     }
 
-   
+    
 
     public function list(ServerRequestInterface $request): View
     {
-       
-        Gate::authorize('create', User::class); 
+        Gate::authorize('list', User::class); 
+
         $criteria = $this->prepareCriteria($request->getQueryParams());
         $users = $this->filter($this->getQuery(), $criteria)->paginate(self::MAX_ITEMS);
-
+        session()->put('bookmarks.users.view', url()->full());
         return view('users.list', compact('criteria', 'users'));
     }
 
@@ -75,17 +80,17 @@ class UserController extends SearchableController
         Gate::authorize('create', User::class);
 
         $data = validator($request->getParsedBody(), [
-            'email' => ['required','email','max:255','unique:users,email'],
-            'name' => ['required','max:255'],
-            'password' => ['required','max:255'],
-            'role' => ['required', Rule::in(['ADMIN','USER'])],
+            'email'    => ['required', 'email', 'max:255', 'unique:users,email'],
+            'name'     => ['required', 'max:255'],
+            'password' => ['required', 'max:255'],
+            'role'     => ['required', Rule::in(['ADMIN', 'USER'])],
         ])->validate();
 
         $user = new User();
         $user->email = $data['email'];
-        $user->name = $data['name'];
-        $user->password = $data['password']; 
-        $user->role = $data['role'];
+        $user->name  = $data['name'];
+        $user->password = Hash::make($data['password']); 
+        $user->role  = $data['role'];
         $user->email_verified_at = now();
         $user->remember_token = '';
         $user->save();
@@ -97,51 +102,56 @@ class UserController extends SearchableController
 
     public function view(string $user): View
     {
-        Gate::authorize('create', User::class); 
         $user = $this->find($user);
+        Gate::authorize('view', $user);
 
-       
-        session()->put('bookmarks.users.view', url()->full());
 
-        return view('users.view', compact('user'));
+        $back = session('bookmarks.users.view');
+
+        if (!$back || $back === url()->current()) {
+        $prev = url()->previous();
+        $back = ($prev && parse_url($prev, PHP_URL_PATH) === '/users')
+            ? $prev
+            : route('users.list');
+    }
+
+         return view('users.view', compact('user', 'back'));
     }
 
     public function showUpdateForm(string $user): View
     {
-        Gate::authorize('create', User::class); 
         $user = $this->find($user);
+        Gate::authorize('update', $user);
+
         return view('users.update-form', compact('user'));
     }
 
     public function update(ServerRequestInterface $request, string $user): RedirectResponse
     {
-        Gate::authorize('create', User::class); 
         $user = $this->find($user);
+        Gate::authorize('update', $user);
 
-       
         $isSelf = $this->currentUser()->id === $user->id;
 
         $data = $request->getParsedBody();
 
         $rules = [
-            'name' => ['required','max:255'],
-            
-            'password' => ['nullable','max:255'],
-            'role' => ['required', Rule::in(['ADMIN','USER'])],
+            'name'     => ['required', 'max:255'],
+            'password' => ['nullable', 'max:255'],
+            'role'     => ['required', Rule::in(['ADMIN', 'USER'])],
         ];
-
         $validated = validator($data, $rules)->validate();
 
         $user->name = $validated['name'];
 
         if (!empty($validated['password'])) {
-            $user->password = $validated['password']; 
+            $user->password = Hash::make($validated['password']); // <-- เข้ารหัส
         }
 
+        // ป้องกันแก้ role ตัวเอง (แล้วแต่ requirement — ตอนนี้กันเหมือนเดิม)
         if (!$isSelf) {
             $user->role = $validated['role'];
         }
-       
 
         $user->save();
 
@@ -152,10 +162,9 @@ class UserController extends SearchableController
 
     public function delete(string $user): RedirectResponse
     {
-        Gate::authorize('create', User::class); 
         $target = $this->find($user);
+        Gate::authorize('delete', $target);
 
-       
         if ($this->currentUser()->id === $target->id) {
             return redirect()
                 ->route('users.view', ['user' => $target->email])
@@ -168,13 +177,12 @@ class UserController extends SearchableController
         return redirect($back)->with('status', "User {$user} was deleted.");
     }
 
-    
+    // ====================== Selves ======================
 
     public function selfView(): View
     {
         $user = $this->currentUser();
 
-        
         session()->put('bookmarks.users.selves.view', url()->full());
 
         return view('users.selves.view', compact('user'));
@@ -187,23 +195,23 @@ class UserController extends SearchableController
     }
 
     public function selfUpdate(ServerRequestInterface $request): RedirectResponse
-{
-    $user = $this->currentUser();
-    $data = $request->getParsedBody();
+    {
+        $user = $this->currentUser();
 
-    $validated = validator($data, [
-        'name'     => ['required','max:255'],
-        'password' => ['nullable','max:255'],
-    ])->validate();
+        $validated = validator($request->getParsedBody(), [
+            'name'     => ['required', 'max:255'],
+            'password' => ['nullable', 'max:255'],
+        ])->validate();
 
-    $user->name = $validated['name'];
-    if (!empty($validated['password'])) {
-        $user->password = $validated['password']; 
+        $user->name = $validated['name'];
+
+        if (!empty($validated['password'])) {
+            $user->password = Hash::make($validated['password']); // <-- เข้ารหัส
+        }
+
+        $user->save();
+
+        $back = session()->get('bookmarks.users.selves.view', route('users.selves.view'));
+        return redirect($back)->with('status', 'Your information was updated.');
     }
-    $user->save();
-
-    $back = session()->get('bookmarks.users.selves.update-form', route('users.selves.view'));
-    return redirect($back)->with('status', 'Your information was updated.');
-}
-
 }
