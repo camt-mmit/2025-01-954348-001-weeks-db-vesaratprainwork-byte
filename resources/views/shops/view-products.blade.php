@@ -1,11 +1,16 @@
-@extends('products.main', [
-    'title' => 'List',
+@extends('shops.main', [
     'mainClasses' => ['app-ly-max-width'],
+    'title' => $shop->code,
+    'titleClasses' => ['app-cl-code'],
+    'subTitle' => 'Products',
 ])
 
 @section('header')
     <search>
-        <form action="{{ route('products.list') }}" method="get" class="app-cmp-search-form">
+        <form action="{{ route('shops.view-products', [
+            'shop' => $shop->code,
+        ]) }}" method="get"
+            class="app-cmp-search-form">
             <div class="app-cmp-form-detail">
                 <label for="app-criteria-term">Search</label>
                 <input type="text" id="app-criteria-term" name="term" value="{{ $criteria['term'] }}" />
@@ -21,7 +26,10 @@
 
             <div class="app-cmp-form-actions">
                 <button type="submit" class="app-cl-primary">Search</button>
-                <a href="{{ route('products.list') }}">
+                <a
+                    href="{{ route('shops.view-products', [
+                        'shop' => $shop->code,
+                    ]) }}">
                     <button type="button" class="app-cl-accent">X</button>
                 </a>
             </div>
@@ -30,16 +38,35 @@
 
     <div class="app-cmp-links-bar">
         <nav>
-            @php
-                session()->put('bookmarks.products.create-form', url()->full());
-            @endphp
+            <form action="{{ route('shops.remove-product', [
+                'shop' => $shop->code,
+            ]) }}"
+                id="app-form-remove-product" method="post">
+                @csrf
+            </form>
 
             <ul class="app-cmp-links">
-                @can('create', \App\Models\Product::class)
-                    <li>
-                        <a href="{{ route('products.create-form') }}">New Product</a>
-                    </li>
-                @endcan
+                @php
+                    session()->put('bookmarks.shops.add-products-form', url()->full());
+                @endphp
+
+                <li>
+                    <a
+                        href="{{ session()->get(
+                            'bookmarks.shops.view-products',
+                            route('shops.view', [
+                                'shop' => $shop->code,
+                            ]),
+                        ) }}">&lt;
+                        Back</a>
+                </li>
+                <li>
+                    <a
+                        href="{{ route('shops.add-products-form', [
+                            'shop' => $shop->code,
+                        ]) }}">Add
+                        Products</a>
+                </li>
             </ul>
         </nav>
 
@@ -55,6 +82,7 @@
             <col />
             <col />
             <col style="width: 4ch;" />
+            <col style="width: 0px;" />
         </colgroup>
 
         <thead>
@@ -64,6 +92,7 @@
                 <th>Category</th>
                 <th>Price</th>
                 <th>No. of Shops</th>
+                <th></th>
             </tr>
         </thead>
 
@@ -92,6 +121,11 @@
                     </td>
                     <td class="app-cl-number">{{ number_format($product->price, 2) }}</td>
                     <td class="app-cl-number">{{ number_format($product->shops_count, 0) }}</td>
+                    <td>
+                        <button type="submit" form="app-form-remove-product" name="product" value="{{ $product->code }}">
+                            Remove
+                        </button>
+                    </td>
                 </tr>
             @endforeach
         </tbody>

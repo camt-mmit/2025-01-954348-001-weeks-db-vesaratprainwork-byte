@@ -1,11 +1,16 @@
-@extends('shops.main', [
-    'title' => 'List',
+@extends('products.main', [
     'mainClasses' => ['app-ly-max-width'],
+    'title' => $product->code,
+    'titleClasses' => ['app-cl-code'],
+    'subTitle' => 'Add Shops',
 ])
 
 @section('header')
     <search>
-        <form action="{{ route('shops.list') }}" method="get" class="app-cmp-search-form">
+        <form action="{{ route('products.add-shops-form', [
+            'product' => $product->code,
+        ]) }}"
+            method="get" class="app-cmp-search-form">
             <div class="app-cmp-form-detail">
                 <label for="app-criteria-term">Search</label>
                 <input type="text" id="app-criteria-term" name="term" value="{{ $criteria['term'] }}" />
@@ -13,7 +18,10 @@
 
             <div class="app-cmp-form-actions">
                 <button type="submit" class="app-cl-primary">Search</button>
-                <a href="{{ route('shops.list') }}">
+                <a
+                    href="{{ route('products.add-shops-form', [
+                        'product' => $product->code,
+                    ]) }}">
                     <button type="button" class="app-cl-accent">X</button>
                 </a>
             </div>
@@ -22,13 +30,23 @@
 
     <div class="app-cmp-links-bar">
         <nav>
-            @php
-                session()->put('bookmarks.shops.create-form', url()->full());
-            @endphp
+            <form action="{{ route('products.add-shop', [
+                'product' => $product->code,
+            ]) }}"
+                id="app-form-add-shop" method="post">
+                @csrf
+            </form>
 
             <ul class="app-cmp-links">
                 <li>
-                    <a href="{{ route('shops.create-form') }}">New Shop</a>
+                    <a
+                        href="{{ session()->get(
+                            'products.add-shops-form',
+                            route('products.view-shops', [
+                                'product' => $product->code,
+                            ]),
+                        ) }}">&lt;
+                        Back</a>
                 </li>
             </ul>
         </nav>
@@ -44,6 +62,7 @@
             <col />
             <col />
             <col style="width: 4ch;" />
+            <col style="width: 0px;" />
         </colgroup>
 
         <thead>
@@ -52,6 +71,7 @@
                 <th>Name</th>
                 <th>Owner</th>
                 <th>No. of Products</th>
+                <th></th>
             </tr>
         </thead>
 
@@ -72,7 +92,12 @@
                     </td>
                     <td>{{ $shop->name }}</td>
                     <td>{{ $shop->owner }}</td>
-                    <td class="app-cl-number">{{ $shop->products_count }}</td>
+                    <td class="app-cl-number">{{ number_format($shop->products_count, 0) }}</td>
+                    <td>
+                        <button type="submit" form="app-form-add-shop" name="shop" value="{{ $shop->code }}">
+                            Add
+                        </button>
+                    </td>
                 </tr>
             @endforeach
         </tbody>
