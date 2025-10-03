@@ -17,6 +17,11 @@
 
     <div class="app-cmp-form-actions">
         <button type="submit">Update</button>
+
+        <a href="{{ route('categories.view', ['category' => $category->code]) }}">
+  <button type="button">Cancel</button>
+</a>
+
     </div>
 </form>
 @endsection

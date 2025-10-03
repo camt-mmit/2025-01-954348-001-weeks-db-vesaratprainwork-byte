@@ -28,6 +28,11 @@
 
 <div class="app-cmp-links-bar">
     <nav>
+
+        @php
+        session()->put('bookmarks.products.add-shops-form', url()->full());
+        @endphp
+
         <form action="{{ route('products.add-shops-form', [
  'product' => $product->code,
  ]) }}" id="app-form-add-shop" method="post">
@@ -35,10 +40,11 @@
         </form>
         <ul class="app-cmp-links">
             <li>
-                <a href="{{ route('products.view-shops', ['product' => $product->code]) }}">
+                <a href="{{ session()->get('bookmarks.products.view-shops', route('products.view-shops', ['product' => $product->code])) }}">
                     &lt; Back
                 </a>
             </li>
+
             <li>
                 <a href="{{ route('shops.create-form') }}">New Shop</a>
             </li>
@@ -66,6 +72,13 @@
     </thead>
 
     <tbody>
+
+            @php
+        session()->put('bookmarks.shops.view', url()->full());
+        @endphp
+
+
+
         @foreach ($shops as $shop)
         <tr>
             <td>
@@ -77,8 +90,10 @@
             <td>{{ $shop->owner }}</td>
             <td class="app-cl-number">{{ number_format($shop->products_count, 0) }}</td>
             <td>
+                @can('update', $product)
                 <button type="submit" form="app-form-add-shop" name="shop"
                     value="{{ $shop->code }}">Add</button>
+                    @endcan
             </td>
         </tr>
         @endforeach

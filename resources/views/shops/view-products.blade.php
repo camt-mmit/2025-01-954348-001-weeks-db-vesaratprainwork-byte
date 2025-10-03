@@ -4,28 +4,33 @@
 ])
 
 @section('header')
+    @php
+        session()->put('bookmarks.products.view', url()->full());          
+        session()->put('bookmarks.shops.view-products', url()->full());    
+        session()->put('bookmarks.categories.view', url()->full());        
+    @endphp
+
     <search>
-        <form action="{{ route('shops.view-products', ['shop' => $shop->code]) }}" method="get" class="app-cmp-search-form">
+        <form action="{{ route('shops.view-products', ['shop' => $shop->code]) }}"
+              method="get" class="app-cmp-search-form">
             <div class="app-cmp-form-detail">
                 <label for="app-criteria-term">Search</label>
-                <input
-                    type="text"
-                    id="app-criteria-term"
-                    name="term"
-                    value="{{ $criteria['term'] }}"
-                    placeholder="code / name" />
+                <input type="text" id="app-criteria-term" name="term"
+                       value="{{ $criteria['term'] ?? '' }}" placeholder="code / name" />
 
                 <label for="app-criteria-min-price">Min Price</label>
-                <input type="number" id="app-criteria-min-price" name="minPrice" value="{{ $criteria['minPrice'] }}" step="any" />
+                <input type="number" id="app-criteria-min-price" name="minPrice"
+                       value="{{ $criteria['minPrice'] ?? '' }}" step="any" />
 
                 <label for="app-criteria-max-price">Max Price</label>
-                <input type="number" id="app-criteria-max-price" name="maxPrice" value="{{ $criteria['maxPrice'] }}" step="any" />
+                <input type="number" id="app-criteria-max-price" name="maxPrice"
+                       value="{{ $criteria['maxPrice'] ?? '' }}" step="any" />
             </div>
 
             <div class="app-cmp-form-actions">
-                <button type="submit" class="primary">Search</button>
+                <button type="submit" class="app-cl-link">Search</button>
                 <a href="{{ route('shops.view-products', ['shop' => $shop->code]) }}">
-                    <button type="button" class="accent">X</button>
+                    <button type="button" class="app-cl-link">Clear</button>
                 </a>
             </div>
         </form>
@@ -33,7 +38,6 @@
 
     <div class="app-cmp-links-bar">
         <nav>
-            {{-- ฟอร์มกลางสำหรับ REMOVE (ปุ่มแต่ละแถวจะ submit มาที่ฟอร์มนี้) --}}
             <form action="{{ route('shops.remove-product', ['shop' => $shop->code]) }}"
                   id="app-form-remove-product" method="post">
                 @csrf
@@ -41,22 +45,22 @@
 
             <ul class="app-cmp-links">
                 <li>
-                    <a href="{{ route('shops.view', ['shop' => $shop->code]) }}">
-                        &lt; Back
-                    </a>
+                    <a href="{{ route('shops.view', ['shop' => $shop->code]) }}">&lt; Back</a>
                 </li>
-                <li>
-                    <a href="{{ route('shops.add-products-form', ['shop' => $shop->code]) }}">
-                        Add Products
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('products.create-form') }}">New Product</a>
-                </li>
+
+                @can('update', $shop)
+                    <li>
+                        <a href="{{ route('shops.add-products-form', ['shop' => $shop->code]) }}">Add Products</a>
+                    </li>
+                @endcan
+
+                @can('create', \App\Models\Product::class)
+                    <li>
+                        <a href="{{ route('products.create-form') }}">New Product</a>
+                    </li>
+                @endcan
             </ul>
         </nav>
-
-        {{ $products->withQueryString()->links() }}
     </div>
 @endsection
 
@@ -73,7 +77,7 @@
                 <th>Price</th>
                 <th>Category</th>
                 <th>No. of Shops</th>
-                <th></th> {{-- คอลัมน์ปุ่ม Remove --}}
+                <th></th>
             </tr>
         </thead>
 
@@ -89,22 +93,28 @@
                     <td class="app-cl-number">{{ number_format($product->price, 2) }}</td>
                     <td>
                         @if($product->category)
-                            <a href="{{ route('categories.view', ['category' => $product->category->code]) }}">
+                            <a href="{{ route('categories.view', ['category' => $product->category->code]) }}"
+                               style="color: var(--app-primary-color);">
                                 {{ $product->category->name }}
                             </a>
+                        @else
+                            <span class="app-cl-warn">—</span>
                         @endif
                     </td>
                     <td class="app-cl-number">{{ number_format($product->shops_count, 0) }}</td>
                     <td>
-                        <button type="submit"
-                                form="app-form-remove-product"
-                                name="product" value="{{ $product->code }}"
-                                class="app-cl-link app-cl-warn">
-                            Remove
-                        </button>
+                        @can('update', $shop)
+                            <button type="submit"
+                                    form="app-form-remove-product"
+                                    name="product" value="{{ $product->code }}"
+                                    class="app-cl-link app-cl-warn">
+                                Remove
+                            </button>
+                        @endcan
                     </td>
                 </tr>
             @endforeach
         </tbody>
     </table>
 @endsection
+

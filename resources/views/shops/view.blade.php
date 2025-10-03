@@ -3,25 +3,45 @@
 ])
 
 @section('header')
+    @php
+        $backUrl = session('bookmarks.shops.view', route('shops.list'));
+        if ($backUrl === url()->full()) {
+            $backUrl = route('shops.list');
+        }
+    @endphp
+
     <nav>
-        <form action="{{ route('shops.delete', ['shop' => $shop->code]) }}" method="post" id="app-form-delete">
-            @csrf
-        </form>
+        
+        @can('delete', $shop)
+            <form action="{{ route('shops.delete', ['shop' => $shop->code]) }}" method="post" id="app-form-delete">
+                @csrf
+            </form>
+        @endcan
 
         <ul class="app-cmp-links">
+            <li><a href="{{ $backUrl }}">&lt; Back</a></li>
+
+           
             <li>
-                <a href="{{ route('shops.view-products', ['shop' => $shop->code]) }}">View Products</a>  {{-- ✅ --}}
+                <a href="{{ route('shops.view-products', ['shop' => $shop->code]) }}">View Products</a>
             </li>
-            <li>
-                <a href="{{ route('shops.update-form', ['shop' => $shop->code]) }}">Update</a>
-            </li>
-            <li class="app-cl-warn">
-                <button type="submit" form="app-form-delete" class="app-cl-link">Delete</button>
-            </li>
+
+            
+            @can('update', $shop)
+                <li>
+                    <a href="{{ route('shops.update-form', ['shop' => $shop->code]) }}">Update</a>
+                </li>
+            @endcan
+
+           
+            @can('delete', $shop)
+                <li class="app-cl-warn">
+                    <button type="submit" form="app-form-delete" class="app-cl-link">Delete</button>
+                </li>
+            @endcan
         </ul>
     </nav>
 @endsection
-
 
 @section('content')
     <dl class="app-cmp-data-detail">
@@ -39,20 +59,12 @@
         <dd>{{ $shop->owner }}</dd>
 
         <dt>Location</dt>
-
-        <dd><span class="app-cl-number">{{ $shop->latitude }}, {{ $shop->longitude }}</span></dd>
+        <dd class="app-cl-number -left">{{ $shop->latitude }}, {{ $shop->longitude }}</dd>
 
         <dt>Address</dt>
-        <dd><pre style="margin: 0px;">{{ $shop->address }}</pre></dd>
-
-<dd class="app-cl-number -left">
-    {{ $shop->latitude }}, {{ $shop->longitude }}
-</dd>
-        <dt>Address</dt>
-        <dd>
-            <div class="app-cl-multiline">{{ $shop->address }}</div>
-        </dd>
-
+        <dd><pre style="margin:0">{{ $shop->address }}</pre></dd>
     </dl>
 @endsection
+
+
 

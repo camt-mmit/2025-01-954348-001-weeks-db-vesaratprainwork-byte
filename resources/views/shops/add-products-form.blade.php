@@ -12,20 +12,33 @@
             </div>
             <div class="app-cmp-form-actions">
                 <button type="submit" class="primary">Search</button>
-                <a href="{{ route('shops.add-products-form', ['shop' => $shop->code]) }}"><button type="button" class="accent">X</button></a>
+                <a href="{{ route('shops.add-products-form', ['shop' => $shop->code]) }}">
+                    <button type="button" class="accent">X</button>
+                </a>
             </div>
         </form>
     </search>
 
     <div class="app-cmp-links-bar">
         <nav>
-            {{-- ฟอร์มกลางสำหรับ Add --}}
+            @php
+                session()->put('bookmarks.products.view', url()->full());
+                session()->put('bookmarks.shops.add-products-form', url()->full());
+                session()->put('bookmarks.categories.view', url()->full());
+            @endphp
+
             <form action="{{ route('shops.add-products', ['shop' => $shop->code]) }}" id="app-form-add-product" method="post">
                 @csrf
             </form>
             <ul class="app-cmp-links">
-                <li><a href="{{ route('shops.view-products', ['shop' => $shop->code]) }}">&lt; Back</a></li>
-                <li><a href="{{ route('products.create-form') }}">New Product</a></li>
+                <li>
+                    <a href="{{ session()->get('bookmarks.shops.view-products', route('shops.view-products', ['shop' => $shop->code])) }}">
+                        &lt; Back
+                    </a>
+                </li>
+                @can('create', \App\Models\Product::class)
+                    <li><a href="{{ route('products.create-form') }}">New Product</a></li>
+                @endcan
             </ul>
         </nav>
         {{ $products->withQueryString()->links() }}
@@ -41,21 +54,39 @@
                 <th>Category</th>
                 <th>Price</th>
                 <th>No. of Shops</th>
-                <th>Add</th> 
+                <th>Add</th>
             </tr>
         </thead>
         <tbody>
         @forelse($products as $product)
             <tr>
-                <td class="app-cl-code">{{ $product->code }}</td>
+                <td>
+                    <a href="{{ route('products.view', ['product' => $product->code]) }}" class="app-cl-code">
+                        {{ $product->code }}
+                    </a>
+                </td>
                 <td>{{ $product->name }}</td>
                 <td>{{ optional($product->category)->code }}</td>
+                <td>
+                    @if($product->category)
+                        <a
+                          href="{{ route('categories.view', ['category' => $product->category->code]) }}"
+                          style="color: var(--app-primary-color);"
+                        >
+                          {{ $product->category->name }}
+                        </a>
+                    @else
+                        <span class="app-cl-warn">—</span>
+                    @endif
+                </td>
                 <td class="app-cl-number">{{ number_format($product->price, 2) }}</td>
                 <td class="app-cl-number">{{ number_format($product->shops_count, 0) }}</td>
                 <td>
-                    <button type="submit" form="app-form-add-product" name="product" value="{{ $product->code }}" class="primary">
-                        Add
-                    </button>
+                    @can('update', $shop)
+                        <button type="submit" form="app-form-add-product" name="product" value="{{ $product->code }}" class="primary">
+                            Add
+                        </button>
+                    @endcan
                 </td>
             </tr>
         @empty
@@ -64,3 +95,4 @@
         </tbody>
     </table>
 @endsection
+

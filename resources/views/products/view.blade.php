@@ -4,6 +4,15 @@
 
 @section('header')
 <nav>
+
+    @php
+    $backUrl = session('bookmarks.products.view', route('products.list'));
+    if ($backUrl === url()->full()) {
+    $backUrl = route('products.list');
+    }
+    @endphp
+
+
     <form action="{{ route('products.delete', [
             'product' => $product->code,
         ]) }}" method="post"
@@ -13,11 +22,17 @@
 
     <ul class="app-cmp-links">
         <li>
-            <a href="{{ route('products.update-form',['product' => $product->code,]) }}">Update</a></li>
+            <a href="{{ $backUrl }}">&lt; Back</a>
+        </li>
+        @can('update', $product)
+        <li><a href="{{ route('products.update-form',['product'=>$product->code]) }}">Update</a></li>
+        @endcan
         <li><a href="{{ route('products.view-shops', ['product' => $product->code,]) }}">View Shops</a></li>
+        @can('delete', $product)
         <li class="app-cl-warn">
             <button type="submit" form="app-form-delete" class="app-cl-link">Delete</button>
         </li>
+        @endcan
     </ul>
 </nav>
 @endsection

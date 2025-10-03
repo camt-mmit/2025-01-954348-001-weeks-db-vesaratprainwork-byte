@@ -15,9 +15,15 @@
         <textarea id="app-inp-description" name="description" cols="80" rows="10" required></textarea>
     </div>
 
-    <div class="app-cmp-form-actions">
-        <button type="submit">Create</button>
-    </div>
+@php
+  $cancelUrl = session('bookmarks.categories.create-form', route('categories.list'));
+  if ($cancelUrl === url()->full()) { $cancelUrl = route('categories.list'); }
+@endphp
+
+   <div class="app-cmp-form-actions">
+  <button type="submit">Create</button>
+  <button type="button" onclick="window.location.href='{{ $cancelUrl }}'">Cancel</button>
+</div>
 </form>
 @endsection
 
