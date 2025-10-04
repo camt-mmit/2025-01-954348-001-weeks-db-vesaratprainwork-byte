@@ -67,7 +67,7 @@
     </main>
 
     <footer id="app-cmp-main-footer">
-        &#xA9; Copyright Pachara's Database.
+        &#xA9; Copyright Vesarat Database.
     </footer>
 </body>
 
