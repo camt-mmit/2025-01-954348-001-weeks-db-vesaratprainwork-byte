@@ -8,21 +8,15 @@ use App\Http\Controllers\UserController;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Route;
 
-/**
- * 1) Auth routes (สาธารณะ) — ต้องอยู่นอก middleware 'auth'
- */
+
 Route::controller(LoginController::class)
     ->prefix('auth')
     ->group(static function (): void {
-        Route::get('/login', 'showLoginForm')->name('login');          // name = login (บังคับ)
+        Route::get('/login', 'showLoginForm')->name('login');          
         Route::post('/login', 'authenticate')->name('authenticate');
         Route::post('/logout', 'logout')->name('logout');
     });
 
-/**
- * 2) Protected routes — ต้องล็อกอิน + no-cache
- *    (ย้าย cache.headers ไปรวมกับ auth และลบ auth routes ที่ซ้ำออก)
- */
 Route::middleware([
         'auth',
         'cache.headers:no_store;no_cache;must_revalidate;max_age=0',
@@ -99,7 +93,7 @@ Route::controller(UserController::class)
     ->prefix('/users')
     ->name('users.')
     ->group(static function (): void {
-        Route::get('', 'list')->name('list');                       // users.list
+        Route::get('', 'list')->name('list');                       
         Route::get('/create', 'showCreateForm')->name('create-form');
         Route::post('/create', 'create')->name('create');
         Route::prefix('/{user}')->group(static function (): void {
