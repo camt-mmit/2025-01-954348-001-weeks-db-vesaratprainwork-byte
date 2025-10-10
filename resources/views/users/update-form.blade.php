@@ -18,7 +18,7 @@
             <input type="email" id="app-inp-email" value="{{ $user->email }}" disabled />
 
             <label for="app-inp-name">Name</label>
-            <input type="text" id="app-inp-name" name="name" value="{{ $user->name }}" required />
+            <input type="text" id="app-inp-name" name="name" value="{{ old('name', $user->name) }}" required />
 
             <label for="app-inp-password">Password</label>
             <input type="password"
@@ -36,9 +36,9 @@
                 <input type="hidden" name="role" value="{{ $user->role }}">
             @else
                 <select id="app-inp-role" name="role" required>
-                    <option value="USER"  @selected($user->role === 'USER')>USER</option>
-                    <option value="ADMIN" @selected($user->role === 'ADMIN')>ADMIN</option>
-                </select>
+    <option value="USER"  @selected(old('role', $user->role) === 'USER')>USER</option>
+    <option value="ADMIN" @selected(old('role', $user->role) === 'ADMIN')>ADMIN</option>
+</select>
             @endif
 
             <div class="app-cmp-form-actions">

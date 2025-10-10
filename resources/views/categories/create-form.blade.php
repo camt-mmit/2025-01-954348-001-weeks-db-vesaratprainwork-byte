@@ -1,4 +1,3 @@
-
 @extends('categories.main', [
     'title' => 'Create',
 ])
@@ -9,13 +8,15 @@
 
         <div class="app-cmp-form-detail">
             <label for="app-inp-code">Code</label>
-            <input type="text" id="app-inp-code" name="code" required class="app-cl-code" />
+            <input type="text" id="app-inp-code" name="code" value="{{ old('code') }}" required class="app-cl-code" />
 
             <label for="app-inp-name">Name</label>
-            <input type="text" id="app-inp-name" name="name" required />
+            <input type="text" id="app-inp-name" name="name" value="{{ old('name') }}" required />
 
+            
             <label for="app-inp-description">Description</label>
-            <textarea id="app-inp-descruotuib" name="description" cols="80" rows="10" required></textarea>
+            <textarea id="app-inp-description" name="description" cols="80" rows="10">{{ old('description') }}</textarea>
+            
         </div>
 
         <div class="app-cmp-form-actions">

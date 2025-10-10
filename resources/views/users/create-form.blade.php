@@ -9,19 +9,19 @@
             @csrf
 
             <label for="app-inp-name">Name</label>
-            <input type="text" id="app-inp-name" name="name" required />
+            <input type="text" id="app-inp-name" name="name" value="{{ old('name') }}" required />
 
             <label for="app-inp-email">E-mail</label>
-            <input type="email" id="app-inp-email" name="email" required />
+            <input type="email" id="app-inp-email" name="email" value="{{ old('email') }}" required />
 
             <label for="app-inp-password">Password</label>
             <input type="password" id="app-inp-password" name="password" required />
 
             <label for="app-inp-role">Role</label>
             <select id="app-inp-role" name="role" required>
-                <option value="USER">USER</option>
-                <option value="ADMIN">ADMIN</option>
-            </select>
+    <option value="USER" @selected(old('role') == 'USER')>USER</option>
+    <option value="ADMIN" @selected(old('role') == 'ADMIN')>ADMIN</option>
+</select>
 
             <div class="app-cmp-form-actions">
                 <button type="submit">Create</button>

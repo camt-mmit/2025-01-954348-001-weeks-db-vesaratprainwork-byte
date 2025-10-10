@@ -25,16 +25,16 @@
                     <a href="{{ route('shops.list') }}">Shops</a>
                 </li>
                 @canany(['list','viewAny'], \App\Models\User::class)
-        <li><a href="{{ route('users.list') }}">Users</a></li>
-      @endcanany
+                <li><a href="{{ route('users.list') }}">Users</a></li>
+                @endcanany
             </ul>
 
             @auth
-                <form action="{{ route('logout') }}" method="post">
-                    @csrf
-                    <span class="app-cl-name">{{ \Auth::user()->name }}</span>
-                    <button type="submit">Logout</button>
-                </form>
+            <form action="{{ route('logout') }}" method="post">
+                @csrf
+                <a href="{{ route('users.selves.view') }}" class="app-cl-name">{{ \Auth::user()->name }}</a>
+                <button type="submit">Logout</button>
+            </form>
             @endauth
         </nav>
     </header>
@@ -42,26 +42,29 @@
     <main id="app-cmp-main-content" @class($mainClasses ?? [])>
         <header>
             <h1>
-                 {{ $title ?? '' }}
-        @isset($subTitle)
-            : <span class="app-cl-code">{{ $subTitle }}</span>
-        @endisset
+                {{ $title ?? '' }}
+                @isset($subTitle)
+                : <span class="app-cl-code">{{ $subTitle }}</span>
+                @endisset
             </h1>
 
             <div class="app-cmp-notifications">
                 @session('status')
-                    <div role="status">
-                        {{ $value }}
-                    </div>
+                <div role="status">
+                    {{ $value }}
+                </div>
                 @endsession
 
-                @error('credentials')
-                    <div role="alert">{{ $message }}</div>
+                @error('alert')
+                <div role="alert">
+                    {{ $message }}
+                </div>
                 @enderror
             </div>
 
             @yield('header')
         </header>
+
 
         @yield('content')
     </main>

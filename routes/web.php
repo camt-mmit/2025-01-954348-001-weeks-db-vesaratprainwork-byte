@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 Route::controller(LoginController::class)
     ->prefix('auth')
     ->group(static function (): void {
-        Route::get('/login', 'showLoginForm')->name('login');          
+        Route::get('/login', 'showLoginForm')->name('login');
         Route::post('/login', 'authenticate')->name('authenticate');
         Route::post('/logout', 'logout')->name('logout');
     });
@@ -89,26 +89,31 @@ Route::middleware([
                 });
             });
 
-Route::controller(UserController::class)
-    ->prefix('/users')
-    ->name('users.')
-    ->group(static function (): void {
-        Route::get('', 'list')->name('list');                       
-        Route::get('/create', 'showCreateForm')->name('create-form');
-        Route::post('/create', 'create')->name('create');
-        Route::prefix('/{user}')->group(static function (): void {
-            Route::get('', 'view')->name('view');
-            Route::get('/update', 'showUpdateForm')->name('update-form');
-            Route::post('/update', 'update')->name('update');
-            Route::post('/delete', 'delete')->name('delete');
-        });
-    });
-    });
-Route::prefix('/users/selves')
-    ->name('users.selves.')
-    ->controller(UserController::class)
-    ->group(static function (): void {
-        Route::get('', 'viewSelf')->name('view');
-        Route::get('/update', 'showUpdateSelfForm')->name('update-form');
-        Route::post('/update', 'updateSelf')->name('update');
+       
+        Route::prefix('/users/selves')
+            ->name('users.selves.')
+            ->controller(UserController::class)
+            ->group(static function (): void {
+                Route::get('', 'selfView')->name('view');
+                Route::get('/update', 'showSelfUpdateForm')->name('update-form');
+                Route::post('/update', 'selfUpdate')->name('update');
+            });
+
+        
+        Route::controller(UserController::class)
+            ->prefix('/users')
+            ->name('users.')
+            ->group(static function (): void {
+                Route::get('', 'list')->name('list');
+                Route::get('/create', 'showCreateForm')->name('create-form');
+                Route::post('/create', 'create')->name('create');
+                Route::prefix('/{user}')->group(static function (): void {
+                    Route::get('', 'view')->name('view');
+                    Route::get('/update', 'showUpdateForm')->name('update-form');
+                    Route::post('/update', 'update')->name('update');
+                    Route::post('/delete', 'delete')->name('delete');
+                });
+            });
+
+        
     });

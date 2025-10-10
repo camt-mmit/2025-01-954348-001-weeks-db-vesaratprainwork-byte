@@ -8,24 +8,28 @@
 
         <div class="app-cmp-form-detail">
             <label for="app-inp-code">Code</label>
-            <input type="text" id="app-inp-code" name="code" required class="app-cl-code" />
+            <input type="text" id="app-inp-code" name="code" value="{{ old('code') }}" required class="app-cl-code" />
 
             <label for="app-inp-name">Name</label>
-            <input type="text" id="app-inp-name" name="name" required />
+            <input type="text" id="app-inp-name" name="name" value="{{ old('name') }}" required />
 
             <label for="app-inp-category">Category</label>
             <select id="app-inp-category" name="category" required>
                 <option value="">--- Please Select Category ---</option>
                 @foreach ($categories as $category)
-                    <option value="{{ $category->code }}">[{{ $category->code }}] {{ $category->name }}</option>
+                    {{-- แก้ไข value ให้เป็น $category->code --}}
+                    <option value="{{ $category->code }}"
+                        @selected(old('category') == $category->code)>
+                        [{{ $category->code }}] {{ $category->name }}
+                    </option>
                 @endforeach
             </select>
 
             <label for="app-inp-price">Price</label>
-            <input type="number" id="app-inp-price" name="price" step="any" required />
+            <input type="number" id="app-inp-price" name="price" value="{{ old('price') }}" step="any" required />
 
             <label for="app-inp-description">Description</label>
-            <textarea id="app-inp-description" name="description" cols="80" rows="10" required></textarea>
+            <textarea id="app-inp-description" name="description" cols="80" rows="10" required>{{ old('description') }}</textarea>
         </div>
 
         <div class="app-cmp-form-actions">

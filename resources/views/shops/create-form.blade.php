@@ -8,22 +8,22 @@
 
         <div class="app-cmp-form-detail">
             <label for="app-inp-code">Code</label>
-            <input type="text" id="app-inp-code" name="code" required class="app-cl-code" />
+            <input type="text" id="app-inp-code" name="code" value="{{ old('code') }}" required class="app-cl-code" />
 
             <label for="app-inp-name">Name</label>
-            <input type="text" id="app-inp-name" name="name" required />
+            <input type="text" id="app-inp-name" name="name" value="{{ old('name') }}" required />
 
             <label for="app-inp-owner">Owner</label>
-            <input type="text" id="app-inp-owner" name="owner" required />
+            <input type="text" id="app-inp-owner" name="owner" value="{{ old('owner') }}" required />
 
             <label for="app-inp-latitude">Latitude</label>
-            <input type="number" id="app-inp-latitude" name="latitude" step="any" required />
+            <input type="number" id="app-inp-latitude" name="latitude" value="{{ old('latitude') }}" step="any" required />
 
             <label for="app-inp-longitude">Longitude</label>
-            <input type="number" id="app-inp-longitude" name="longitude" step="any" required />
+            <input type="number" id="app-inp-longitude" name="longitude" value="{{ old('longitude') }}" step="any" required />
 
             <label for="app-inp-address">Address</label>
-            <textarea id="app-inp-address" name="address" cols="80" rows="10" required></textarea>
+            <textarea id="app-inp-address" name="address" cols="80" rows="10" required>{{ old('address') }}</textarea>
         </div>
 
         <div class="app-cmp-form-actions">

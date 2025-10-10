@@ -20,11 +20,7 @@
                 <a href="{{ route('shops.view-products', ['shop' => $shop->code]) }}">View Products</a>
             </li>
 
-            @can('addProduct', $shop)
-                <li>
-                    <a href="{{ route('shops.add-products-form', ['shop' => $shop->code]) }}">Add Products</a>
-                </li>
-            @endcan
+            
 
             @can('update', $shop)
                 <li>
